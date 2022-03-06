@@ -1,56 +1,79 @@
-import {
-  Link as ChakraLink,
-  Text,
-  Code,
-  List,
-  ListIcon,
-  ListItem,
-} from '@chakra-ui/react'
-import { CheckCircleIcon, LinkIcon } from '@chakra-ui/icons'
+import { Box, Center, SimpleGrid } from "@chakra-ui/react";
 
-import { Hero } from '../components/Hero'
-import { Container } from '../components/Container'
-import { Main } from '../components/Main'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
-import { CTA } from '../components/CTA'
-import { Footer } from '../components/Footer'
+import { Hero } from "../components/Hero";
+import { Container } from "../components/Container";
+import { Footer } from "../components/Footer";
+import Card from "../components/Card";
+import { gql, useQuery } from "@apollo/client";
+import { AllApisQueryQuery } from "../generated/graphql";
+import { initializeApollo, addApolloState } from "../apollo/client";
 
-const Index = () => (
-  <Container height="100vh">
-    <Hero />
-    <Main>
-      <Text>
-        Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code> +{' '}
-        <Code>typescript</Code>.
-      </Text>
+export const ALL_APIS_QUERY = gql`
+  query AllApisQuery {
+    services {
+      link
+      description
+      cors
+      auth
+      https
+      cors
+      category
+      title
+    }
+  }
+`;
 
-      <List spacing={3} my={0}>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink
-            isExternal
-            href="https://chakra-ui.com"
-            flexGrow={1}
-            mr={2}
-          >
-            Chakra UI <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink isExternal href="https://nextjs.org" flexGrow={1} mr={2}>
-            Next.js <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-      </List>
-    </Main>
+const Index = () => {
+  const { loading, error, data } = useQuery<AllApisQueryQuery>(ALL_APIS_QUERY, {
+    // Setting this value to true will make the component rerender when
+    // the "networkStatus" changes, so we are able to know if it is fetching
+    // more data
+    notifyOnNetworkStatusChange: true,
+  });
 
-    <DarkModeSwitch />
-    <Footer>
-      <Text>Next ❤️ Chakra</Text>
-    </Footer>
-    <CTA />
-  </Container>
-)
+  if (error) return <p>Error :(</p>;
+  if (loading) return <p>Loading...</p>;
+  return (
+    <Container>
+      <Hero title="A collection public APIs" />
+      <Center>
+        <Box p={4}>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
+            {data?.services.map((service) => {
+              return <Card service={service} />;
+            })}
+          </SimpleGrid>
+        </Box>
+      </Center>
+      <Footer />
+    </Container>
+  );
+};
 
-export default Index
+export const getServerSideProps = async () => {
+  const apolloClient = initializeApollo();
+
+  await apolloClient.query({
+    query: ALL_APIS_QUERY,
+  });
+
+  return addApolloState(apolloClient, {
+    props: {},
+  });
+};
+
+// export async function getStaticProps() {
+//   const apolloClient = initializeApollo();
+
+//   await apolloClient.query({
+//     query: ALL_APIS_QUERY,
+//   });
+
+//   return {
+//     props: {
+//       initialApolloState: apolloClient.cache.extract(),
+//     },
+//   };
+// }
+
+export default Index;

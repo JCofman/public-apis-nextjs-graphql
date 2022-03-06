@@ -1,0 +1,6 @@
+schema: YOUR_SCHEMA_LOCATION_HERE
+generates:
+  ./resolvers-types.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers
