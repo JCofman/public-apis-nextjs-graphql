@@ -40,7 +40,7 @@ const Index = () => {
         <Box p={4}>
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
             {data?.services.map((service) => {
-              return <Card service={service} />;
+              return <Card key={service.link} service={service} />;
             })}
           </SimpleGrid>
         </Box>
@@ -50,7 +50,7 @@ const Index = () => {
   );
 };
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   const apolloClient = initializeApollo();
 
   await apolloClient.query({
@@ -59,21 +59,10 @@ export const getServerSideProps = async () => {
 
   return addApolloState(apolloClient, {
     props: {},
+    // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    revalidate: 600, // In seconds
   });
 };
-
-// export async function getStaticProps() {
-//   const apolloClient = initializeApollo();
-
-//   await apolloClient.query({
-//     query: ALL_APIS_QUERY,
-//   });
-
-//   return {
-//     props: {
-//       initialApolloState: apolloClient.cache.extract(),
-//     },
-//   };
-// }
 
 export default Index;

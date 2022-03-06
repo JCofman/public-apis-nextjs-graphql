@@ -1,6 +1,5 @@
 import {
   Box,
-  Center,
   useColorModeValue,
   Heading,
   Text,
@@ -11,14 +10,9 @@ import {
 } from "@chakra-ui/react";
 import { Service } from "../generated/graphql";
 import { Icon } from "@chakra-ui/react";
-import {
-  HiOutlineBadgeCheck,
-  HiOutlineKey,
-  HiOutlineExternalLink,
-  HiOutlineShare,
-} from "react-icons/hi";
+import { HiOutlineShare } from "react-icons/hi";
 import { Divider } from "@chakra-ui/react";
-
+// @ts-ignore
 import filenamify from "filenamify/browser";
 import humanizeUrl from "humanize-url";
 import Image from "next/image";
@@ -60,13 +54,7 @@ const Card = (props: CardProps) => {
             height={"230px"}
             overflow={"hidden"}
           >
-            <Image
-              height="500px"
-              width="500px"
-              layout={"fill"}
-              objectFit="cover"
-              src={imageSrc}
-            />
+            <Image layout={"fill"} objectFit="cover" src={imageSrc} />
             <Icon
               rounded={"full"}
               backgroundColor={"blackAlpha.100"}

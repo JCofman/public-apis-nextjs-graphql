@@ -25,14 +25,10 @@ export const Shapes = ({ isHover, isPress, mouseX, mouseY }: any) => {
     <Canvas shadows dpr={[1, 2]} resize={{ scroll: false, offsetSize: true }}>
       <Camera mouseX={mouseX} mouseY={mouseY} />
       <MotionConfig transition={transition}>
-        <motion.group
-          center={[0, 0, 0]}
-          rotation={[lightRotateX, lightRotateY, 0]}
-        >
+        <motion.group rotation={[lightRotateX, lightRotateY, 0]}>
           <Lights />
         </motion.group>
         <motion.group
-          initial={false}
           animate={isHover ? "hover" : "rest"}
           dispose={null}
           variants={{
@@ -134,15 +130,26 @@ export const Material = () => {
   return <meshPhongMaterial color="#fff" specular="#61dafb" shininess={10} />;
 };
 
-const Camera = ({ mouseX, mouseY, ...props }) => {
-  const cameraX = useSmoothTransform(mouseX, spring, (x) => x / 350);
-  const cameraY = useSmoothTransform(mouseY, spring, (y) => (-1 * y) / 350);
+const Camera = ({
+  mouseX,
+  mouseY,
+  ...props
+}: {
+  mouseX: number;
+  mouseY: number;
+}) => {
+  const cameraX = useSmoothTransform(mouseX, spring, (x: number) => x / 350);
+  const cameraY = useSmoothTransform(
+    mouseY,
+    spring,
+    (y: number) => (-1 * y) / 350
+  );
 
   const set = useThree(({ set }) => set);
   const camera = useThree(({ camera }) => camera);
   const size = useThree(({ size }) => size);
   const scene = useThree(({ scene }) => scene);
-  const cameraRef = useRef();
+  const cameraRef = useRef<any>();
 
   useLayoutEffect(() => {
     const { current: cam } = cameraRef;
@@ -175,4 +182,4 @@ const Camera = ({ mouseX, mouseY, ...props }) => {
 
 const spring = { stiffness: 600, damping: 30 };
 
-const mouseToLightRotation = (v) => (-1 * v) / 140;
+const mouseToLightRotation = (v: number) => (-1 * v) / 140;

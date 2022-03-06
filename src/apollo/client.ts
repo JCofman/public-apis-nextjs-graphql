@@ -16,13 +16,14 @@ export type ResolverContext = {
   res?: ServerResponse;
 };
 
-const createIsomorphLink = (context: ResolverContext = {}) => {
+const createIsomorphLink = (_context: ResolverContext = {}) => {
   if (typeof window === "undefined") {
     // todo: find out how schemaLink works with ssr
     // const { SchemaLink } = require("@apollo/client/link/schema");
     // const { schema } = require("./schema");
     // console.log(schema);
     // return new SchemaLink({ schema, context });
+
     const { HttpLink } = require("@apollo/client/link/http");
     return new HttpLink({
       uri: "http://localhost:3000/api/graphql",
