@@ -50,8 +50,8 @@ const Index = () => {
   );
 };
 
-export const getStaticProps = async () => {
-  const apolloClient = initializeApollo();
+export const getServerSideProps = async () => {
+  const apolloClient = initializeApollo(null, process.env.HOST);
 
   await apolloClient.query({
     query: ALL_APIS_QUERY,
@@ -61,7 +61,6 @@ export const getStaticProps = async () => {
     props: {},
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
-    revalidate: 600, // In seconds
   });
 };
 

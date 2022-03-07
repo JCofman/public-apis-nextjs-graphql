@@ -8,6 +8,7 @@ import {
 } from "@apollo/client";
 import merge from "deepmerge";
 import isEqual from "lodash/isEqual";
+
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 export let apolloClient: ApolloClient<NormalizedCacheObject | null>;
 
@@ -16,29 +17,20 @@ export type ResolverContext = {
   res?: ServerResponse;
 };
 
-const createIsomorphLink = (_context: ResolverContext = {}) => {
-  if (typeof window === "undefined") {
-    // todo: find out how schemaLink works with ssr
-    // const { SchemaLink } = require("@apollo/client/link/schema");
-    // const { schema } = require("./schema");
-    // console.log(schema);
-    // return new SchemaLink({ schema, context });
-
-    const { HttpLink } = require("@apollo/client/link/http");
-    return new HttpLink({
-      uri: "http://localhost:3000/api/graphql",
-      credentials: "same-origin",
-    });
-  } else {
-    const { HttpLink } = require("@apollo/client/link/http");
-    return new HttpLink({
-      uri: "/api/graphql",
-      credentials: "same-origin",
-    });
-  }
+const createIsomorphLink = (context: string | undefined) => {
+  // todo: find out how schemaLink works with ssr
+  // const { SchemaLink } = require("@apollo/client/link/schema");
+  // const { schema } = require("./schema");
+  // console.log(schema);
+  // return new SchemaLink({ schema, context });
+  const { HttpLink } = require("@apollo/client/link/http");
+  return new HttpLink({
+    uri: `${context}/api/graphql`,
+    credentials: "same-origin",
+  });
 };
 
-export const createApolloClient = (context?: ResolverContext) => {
+export const createApolloClient = (context?: string) => {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: createIsomorphLink(context),
@@ -49,7 +41,7 @@ export const createApolloClient = (context?: ResolverContext) => {
 export const initializeApollo = (
   initialState = null, // Pages with Next.js data fetching methods, like `getStaticProps`, can send
   // a custom context which will be used by `SchemaLink` to server render pages
-  context?: ResolverContext
+  context?: string
 ) => {
   const _apolloClient = apolloClient ?? createApolloClient(context);
 

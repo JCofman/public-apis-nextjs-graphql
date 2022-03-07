@@ -2,12 +2,16 @@ import { Resolvers } from "@apollo/client";
 
 export const resolvers: Resolvers = {
   Query: {
-    services: async (_, {}, { dataSources }) => {
-      return dataSources.serviceAPI.getServices();
+    services: async (_, {}, ctx) => {
+      if (ctx) {
+        return ctx.dataSources.serviceAPI.getServices();
+      }
     },
-    service: async (_test, params, { dataSources }) => {
+    service: async (_test, params, ctx) => {
       const urlParams = new URLSearchParams(params);
-      return dataSources.serviceAPI.getService(urlParams);
+      if (ctx) {
+        return ctx.dataSources.serviceAPI.getService(urlParams);
+      }
     },
   },
 };

@@ -9,6 +9,7 @@ const apolloServer = new ApolloServer({
   context: createContext,
   schema,
   debug: true,
+
   introspection: true,
   dataSources: () => {
     return {
