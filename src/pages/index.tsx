@@ -51,7 +51,12 @@ const Index = () => {
 };
 
 export const getServerSideProps = async () => {
-  const apolloClient = initializeApollo(null, process.env.HOST);
+  const apolloClient = initializeApollo(
+    null,
+    process.env.HOST
+      ? process.env.HOST
+      : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  );
 
   await apolloClient.query({
     query: ALL_APIS_QUERY,
