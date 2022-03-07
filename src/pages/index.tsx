@@ -51,6 +51,7 @@ const Index = () => {
 };
 
 export const getServerSideProps = async () => {
+  console.log(process.env);
   const apolloClient = initializeApollo(
     null,
     process.env.HOST
