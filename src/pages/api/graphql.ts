@@ -2,7 +2,10 @@ import { ApolloServer } from "apollo-server-micro";
 import { PageConfig } from "next";
 import { createContext } from "vm";
 import { schema } from "../../apollo/schema";
-
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from "apollo-server-core";
 import { ServiceAPI } from "../../apollo/public-api";
 
 const apolloServer = new ApolloServer({
@@ -11,6 +14,13 @@ const apolloServer = new ApolloServer({
   debug: true,
 
   introspection: true,
+  plugins: [
+    process.env.NODE_ENV === "production"
+      ? ApolloServerPluginLandingPageLocalDefault({
+          footer: false,
+        })
+      : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
+  ],
   dataSources: () => {
     return {
       serviceAPI: new ServiceAPI(),
