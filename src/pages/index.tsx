@@ -7,6 +7,7 @@ import Card from "../components/Card";
 import { gql, useQuery } from "@apollo/client";
 import { AllApisQueryQuery } from "../generated/graphql";
 import { initializeApollo, addApolloState } from "../apollo/client";
+import { GetStaticProps } from "next";
 
 export const ALL_APIS_QUERY = gql`
   query AllApisQuery {
@@ -50,14 +51,8 @@ const Index = () => {
   );
 };
 
-export const getServerSideProps = async () => {
-  console.log(process.env);
-  const apolloClient = initializeApollo(
-    null,
-    process.env.HOST
-      ? process.env.HOST
-      : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-  );
+export const getStaticProps: GetStaticProps = async () => {
+  const apolloClient = initializeApollo(null, "https://public-apis.jcofman.de");
 
   await apolloClient.query({
     query: ALL_APIS_QUERY,
@@ -67,6 +62,7 @@ export const getServerSideProps = async () => {
     props: {},
     // Next.js will attempt to re-generate the page:
     // - When a request comes in
+    revalidate: 600, // In seconds
   });
 };
 

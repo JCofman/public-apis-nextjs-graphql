@@ -2,10 +2,7 @@ import { ApolloServer } from "apollo-server-micro";
 import { PageConfig } from "next";
 import { createContext } from "vm";
 import { schema } from "../../apollo/schema";
-import {
-  ApolloServerPluginLandingPageLocalDefault,
-  ApolloServerPluginLandingPageProductionDefault,
-} from "apollo-server-core";
+import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core";
 import { ServiceAPI } from "../../apollo/public-api";
 
 const apolloServer = new ApolloServer({
