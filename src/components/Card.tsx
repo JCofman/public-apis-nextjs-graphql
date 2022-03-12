@@ -7,6 +7,10 @@ import {
   Button,
   Link,
   Badge,
+  chakra,
+  VisuallyHidden,
+  useClipboard,
+  useToast,
 } from "@chakra-ui/react";
 import { Service } from "../generated/graphql";
 import { Icon } from "@chakra-ui/react";
@@ -18,10 +22,59 @@ import humanizeUrl from "humanize-url";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { ReactNode, useEffect } from "react";
 
 interface CardProps {
   service: Service;
 }
+
+export const ShareButton = ({
+  children,
+  label,
+  href,
+}: {
+  children: ReactNode;
+  label: string;
+  href: string;
+}) => {
+  const { hasCopied, onCopy } = useClipboard(href);
+  const toast = useToast();
+
+  useEffect(() => {
+    if (hasCopied) {
+      toast({
+        title: "Link to Homepage Copied.",
+        description: `We've copied the ${href} to your clipboard.`,
+        status: "success",
+        duration: 1000,
+        isClosable: true,
+      });
+    }
+  }, [hasCopied]);
+  return (
+    <chakra.button
+      pos={"absolute"}
+      top={2}
+      right={2}
+      bg={useColorModeValue("blackAlpha.100", "whiteAlpha.100")}
+      rounded={"full"}
+      w={8}
+      h={8}
+      cursor={"pointer"}
+      display={"inline-flex"}
+      alignItems={"center"}
+      justifyContent={"center"}
+      transition={"background 0.3s ease"}
+      _hover={{
+        bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
+      }}
+      onClick={onCopy}
+    >
+      <VisuallyHidden>{label}</VisuallyHidden>
+      {children}
+    </chakra.button>
+  );
+};
 
 const Card = (props: CardProps) => {
   const { service } = props;
@@ -55,15 +108,20 @@ const Card = (props: CardProps) => {
             overflow={"hidden"}
           >
             <Image layout={"fill"} objectFit="cover" src={imageSrc} />
-            <Icon
-              rounded={"full"}
-              backgroundColor={"blackAlpha.100"}
-              color={"whiteAlpha.900"}
-              pos={"absolute"}
-              top={2}
-              right={2}
-              as={HiOutlineShare}
-            ></Icon>
+            <ShareButton
+              label={service.description ? service.description : ""}
+              href={service.link}
+            >
+              <Icon
+                rounded={"full"}
+                backgroundColor={"blackAlpha.100"}
+                color={"whiteAlpha.900"}
+                pos={"absolute"}
+                top={2}
+                right={2}
+                as={HiOutlineShare}
+              ></Icon>
+            </ShareButton>
           </Box>
           <Stack pt={10} minWidth={0}>
             <Stack spacing={0} align={"center"} mb={5}>
@@ -191,6 +249,9 @@ const Card = (props: CardProps) => {
             _hover={{
               transform: "translateY(-2px)",
               boxShadow: "lg",
+            }}
+            onClick={() => {
+              window.open(service.link, "_blank");
             }}
           >
             Details
