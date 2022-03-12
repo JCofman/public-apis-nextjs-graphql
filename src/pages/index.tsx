@@ -2,7 +2,6 @@ import { Box, Center, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
 
 import { Hero } from "../components/Hero";
 import { Container } from "../components/Container";
-import { Footer } from "../components/Footer";
 import Card from "../components/Card";
 import { gql, useQuery } from "@apollo/client";
 import { AllApisQueryQuery } from "../generated/graphql";

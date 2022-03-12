@@ -19,6 +19,7 @@
     "@graphql-codegen/typescript-resolvers": "^2.5.4",
     "@graphql-tools/schema": "^8.3.2",
     "@react-three/drei": "^8.16.5",
+    "@react-three/fiber": "^7.0.26",
     "@types/filenamify": "^2.0.2",
     "apollo-datasource-rest": "^3.5.1",
     "apollo-server-micro": "^3.6.4",
