@@ -17,7 +17,7 @@ export type ResolverContext = {
   res?: ServerResponse;
 };
 
-const createIsomorphLink = (context: string | undefined) => {
+const createIsomorphLink = () => {
   // todo: find out how schemaLink works with ssr
   // const { SchemaLink } = require("@apollo/client/link/schema");
   // const { schema } = require("./schema");
@@ -25,25 +25,24 @@ const createIsomorphLink = (context: string | undefined) => {
   // return new SchemaLink({ schema, context });
   const { HttpLink } = require("@apollo/client/link/http");
   return new HttpLink({
-    uri: `${context}/api/graphql`,
+    uri: `/api/graphql`,
     credentials: "same-origin",
   });
 };
 
-export const createApolloClient = (context?: string) => {
+export const createApolloClient = () => {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
-    link: createIsomorphLink(context),
+    link: createIsomorphLink(),
     cache: new InMemoryCache(),
   });
 };
 
 export const initializeApollo = (
-  initialState = null, // Pages with Next.js data fetching methods, like `getStaticProps`, can send
+  initialState = null // Pages with Next.js data fetching methods, like `getStaticProps`, can send
   // a custom context which will be used by `SchemaLink` to server render pages
-  context?: string
 ) => {
-  const _apolloClient = apolloClient ?? createApolloClient(context);
+  const _apolloClient = apolloClient ?? createApolloClient();
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
   // gets hydrated here

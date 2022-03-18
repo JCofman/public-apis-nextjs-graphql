@@ -9,7 +9,6 @@ const apolloServer = new ApolloServer({
   context: createContext,
   schema,
   debug: true,
-
   introspection: true,
   plugins: [
     process.env.NODE_ENV === "production"

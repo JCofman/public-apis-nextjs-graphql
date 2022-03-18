@@ -68,13 +68,13 @@ export const Nav = () => {
                 r="95"
                 transform="matrix(0.859406 -0.511293 -0.213371 0.976971 104.988 145.404)"
                 stroke={useColorModeValue("#000", "#fff")}
-                stroke-width="5"
+                strokeWidth="5"
               />
               <circle
                 r="75"
                 transform="matrix(0.859406 -0.511293 -0.213371 0.976971 102.068 148.09)"
                 stroke={useColorModeValue("#000", "#fff")}
-                stroke-width="5"
+                strokeWidth="5"
               />
               <circle
                 cx="101"

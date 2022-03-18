@@ -1,4 +1,4 @@
-import { Flex, Heading, Text, Link } from "@chakra-ui/react";
+import { Flex, Heading, Text, Link, Badge } from "@chakra-ui/react";
 
 export const Hero = ({ title }: { title: string }) => (
   <Flex
@@ -13,21 +13,25 @@ export const Hero = ({ title }: { title: string }) => (
     <Text color={"gray.500"}>
       Displays a list of public APIs, uses a wrapped REST API provided by this
       awesome{" "}
-      <Link
-        isExternal
-        color="teal.500"
-        href="https://github.com/davemachado/public-api"
-      >
-        project
-      </Link>
+      <Badge colorScheme="pink">
+        <Link
+          isExternal
+          color="teal.500"
+          href="https://github.com/davemachado/public-api"
+        >
+          project
+        </Link>
+      </Badge>
       . The Graphql API for this project can be found{" "}
-      <Link
-        isExternal
-        color="teal.500"
-        href="https://public-apis.jcofman.de/api/graphql"
-      >
-        here.
-      </Link>
+      <Badge colorScheme="pink">
+        <Link
+          isExternal
+          color="teal.500"
+          href="https://public-apis.jcofman.de/api/graphql"
+        >
+          here.
+        </Link>
+      </Badge>
     </Text>
   </Flex>
 );

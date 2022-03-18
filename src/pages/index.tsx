@@ -1,12 +1,19 @@
-import { Box, Center, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  SimpleGrid,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
+  useColorModeValue,
+} from "@chakra-ui/react";
 
 import { Hero } from "../components/Hero";
 import { Container } from "../components/Container";
 import Card from "../components/Card";
 import { gql, useQuery } from "@apollo/client";
 import { AllApisQueryQuery } from "../generated/graphql";
-import { initializeApollo, addApolloState } from "../apollo/client";
-import { GetStaticProps } from "next";
+
 import { Nav } from "../components/Navigation";
 
 export const ALL_APIS_QUERY = gql`
@@ -32,12 +39,10 @@ const Index = () => {
     notifyOnNetworkStatusChange: true,
   });
 
-  if (error) return <p>Error :(</p>;
-  if (loading) return <p>Loading...</p>;
-
   return (
     <Container
       style={{
+        minHeight: "100vh",
         backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cpath fill='${useColorModeValue(
           "black",
           "white"
@@ -49,31 +54,45 @@ const Index = () => {
       <Center width="100%" maxWidth="1200px">
         <main>
           <Box p={4}>
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
-              {data?.services.map((service) => {
-                return <Card key={service.link} service={service} />;
-              })}
-            </SimpleGrid>
+            {loading && (
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <Box
+                    key={i}
+                    py={12}
+                    role={"group"}
+                    p={6}
+                    maxW={"330px"}
+                    minW={"330px"}
+                    w={"full"}
+                    bg={useColorModeValue("white", "gray.800")}
+                    boxShadow={"2xl"}
+                    rounded={"lg"}
+                    pos={"relative"}
+                    zIndex={1}
+                    minH={"580px"}
+                  >
+                    <Skeleton height="230px" />
+                    <SkeletonCircle mt="4" size="10" />
+                    <SkeletonText mt="4" noOfLines={4} spacing="4" />
+                    <Skeleton mr="4" ml="4" mt="10" height="50px" />
+                  </Box>
+                ))}
+              </SimpleGrid>
+            )}
+            {error && <p>error: {error.message}</p>}
+            {data && (
+              <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
+                {data?.services.map((service) => {
+                  return <Card key={service.link} service={service} />;
+                })}
+              </SimpleGrid>
+            )}
           </Box>
         </main>
       </Center>
     </Container>
   );
-};
-
-export const getStaticProps: GetStaticProps = async () => {
-  const apolloClient = initializeApollo(null, "https://public-apis.jcofman.de");
-
-  await apolloClient.query({
-    query: ALL_APIS_QUERY,
-  });
-
-  return addApolloState(apolloClient, {
-    props: {},
-    // Next.js will attempt to re-generate the page:
-    // - When a request comes in
-    revalidate: 600, // In seconds
-  });
 };
 
 export default Index;
